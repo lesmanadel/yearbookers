@@ -3,9 +3,10 @@ from classes.Human import Human
 
 
 def generate_human_data(csv_path):
-    fieldnames = ['timestamp', 'name', 'driveurl', 'email', 'country', 'city', 'work', 'company', 'contactme', 'imagename']
+    # fieldnames = ['timestamp', 'name', 'driveurl', 'email', 'country', 'city', 'work', 'company', 'contactme', 'imagename']
     with open(csv_path, newline='') as csvfile:
-        human_data = csv.DictReader(csvfile, delimiter=',', fieldnames=fieldnames)
+        # human_data = csv.DictReader(csvfile, delimiter=',', fieldnames=fieldnames)
+        human_data = csv.DictReader(csvfile, delimiter=',')
         group_of_human = []
         for row in human_data:
             group_of_human.append(
