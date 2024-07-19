@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from lib.human.human_data_generator import generate_human_data
+from lib.human_data_generator import generate_human_data
 
 
 class HumanDataGeneratorTest(TestCase):
