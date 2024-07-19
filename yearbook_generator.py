@@ -27,6 +27,7 @@ def generate_human_card_sections(image, text, margin_top, font_size, boundaries_
 
 
 def generate_human_card(single_human):
+	print("[RUNNING] generating human")
 	background = cv2.imread('assets/images/human_card_background.jpg')
 	profile_picture = cv2.imread(f'assets/images/profile_pictures/{single_human.imagename}')
 
@@ -92,19 +93,13 @@ def generate_human_card(single_human):
 		boundaries_y_start=next_boundaries_y_end,
 		boundaries_y_end=next_boundaries_y_end + 500,
 	)
-	# Save the edited image
+
 	img.save(card_filename)
 
 
-def generate_page(humans):
+def generate_page(humans, page_number):
+	print(f"[RUNNING] generating page {page_number}")
 	background = cv2.imread('assets/images/background_test2.jpg')
-	print(humans[0].imagename)
-	card1 = cv2.imread(f'assets/images/cards/card_{humans[0].imagename}')
-	card2 = cv2.imread(f'assets/images/cards/card_{humans[1].imagename}')
-	card3 = cv2.imread(f'assets/images/cards/card_{humans[2].imagename}')
-	card4 = cv2.imread(f'assets/images/cards/card_{humans[3].imagename}')
-	card5 = cv2.imread(f'assets/images/cards/card_{humans[4].imagename}')
-	card6 = cv2.imread(f'assets/images/cards/card_{humans[5].imagename}')
 
 	top_margin = 105
 	card_size_y = 1649
@@ -117,22 +112,23 @@ def generate_page(humans):
 	col2_end = col1_end + card_size_x
 	col3_end = col2_end + card_size_x
 
-	background[top_margin:row1_end, left_margin:col1_end] = card1
-	background[top_margin:row1_end, col1_end:col2_end] = card2
-	background[top_margin:row1_end, col2_end:col3_end] = card3
-	background[row1_end:row2_end, left_margin:col1_end] = card4
-	background[row1_end:row2_end, col1_end:col2_end] = card5
-	background[row1_end:row2_end, col2_end:col3_end] = card6
+	coord = [
+		[top_margin, row1_end, left_margin, col1_end],
+		[top_margin, row1_end, col1_end, col2_end],
+		[top_margin, row1_end, col2_end, col3_end],
+		[row1_end, row2_end, left_margin, col1_end],
+		[row1_end, row2_end, col1_end, col2_end],
+		[row1_end, row2_end, col2_end, col3_end],
+	]
 
-	card_filename = f'assets/images/pages/page.jpg'
+	i = 0
+	while i < len(humans):
+		card2 = cv2.imread(f'assets/images/cards/card_{humans[i].imagename}')
+		background[coord[i][0]:coord[i][1], coord[i][2]:coord[i][3]] = card2
+		i += 1
+
+	card_filename = f'assets/images/pages/page_{page_number}.jpg'
 	cv2.imwrite(card_filename, background)
-
-	# # Open an Image
-	# img = Image.open(card_filename)
-	#
-	# # Call draw Method to add 2D graphics in an image
-	# image = ImageDraw.Draw(img)
-
 
 
 human_lists = generate_human_data("assets/csv_data/sample.csv")
@@ -141,4 +137,7 @@ for human in human_lists:
 	print(human.name)
 	generate_human_card(human)
 
-generate_page(human_lists)
+i = 0
+while i < len(human_lists):
+	generate_page(humans=human_lists[i:i+6], page_number=i/6 + 1)
+	i += 6
