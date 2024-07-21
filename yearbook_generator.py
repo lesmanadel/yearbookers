@@ -6,8 +6,7 @@ from lib.text_writer import get_font_with_auto_adjusted_size
 from textwrap import TextWrapper
 
 font_path_default = "assets/fonts/gabiant-regular.ttf"
-tw = TextWrapper()
-tw.width = 40
+tw = TextWrapper(width=40, replace_whitespace=False)
 
 
 def generate_human_card_sections(image, text, margin_top, font_size, boundaries_y_start, boundaries_y_end=None, font_path=font_path_default):
@@ -99,7 +98,7 @@ def generate_human_card(single_human):
 
 		next_boundaries_y_end = generate_human_card_sections(
 			image=image,
-			text="\n".join(tw.wrap(single_human.contactme[1:len(single_human.contactme)-1])),
+			text="\r\n".join(tw.wrap(single_human.contactme[1:len(single_human.contactme)-1])),
 			margin_top=5,
 			font_size=42,
 			boundaries_y_start=next_boundaries_y_end,
