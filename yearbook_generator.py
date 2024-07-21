@@ -6,7 +6,9 @@ from lib.text_writer import get_font_with_auto_adjusted_size
 from textwrap import TextWrapper
 
 font_path_default = "assets/fonts/gabiant-regular.ttf"
-tw = TextWrapper(width=40, break_long_words=False, replace_whitespace=False)
+tw_name = TextWrapper(width=27, replace_whitespace=False)
+tw_contactme = TextWrapper(width=40, break_long_words=False, replace_whitespace=False)
+tw_work = TextWrapper(width=40, replace_whitespace=False)
 
 
 def generate_human_card_sections(image, text, margin_top, font_size, boundaries_y_start, boundaries_y_end=None, font_path=font_path_default):
@@ -19,7 +21,7 @@ def generate_human_card_sections(image, text, margin_top, font_size, boundaries_
 	font = ImageFont.truetype(font_path, font_size)
 	boundaries = (boundaries_x_start, boundaries_y_start, boundaries_x_end, boundaries_y_end)
 
-	image.rectangle(boundaries, outline="#000")
+	# image.rectangle(boundaries, outline="#000")
 
 	font = get_font_with_auto_adjusted_size(font, font_size, boundaries, text)
 
@@ -54,18 +56,19 @@ def generate_human_card(single_human):
 	next_boundaries_y_end = 778
 	next_boundaries_y_end = generate_human_card_sections(
 		image=image,
-		text=single_human.name,
+		text='\n'.join(tw_name.wrap(single_human.name)),
 		margin_top=0,
-		font_size=52,
+		font_size=70,
 		boundaries_y_start=next_boundaries_y_end,
+		boundaries_y_end=next_boundaries_y_end + 140,
 	)
 
 	if single_human.email:
 		next_boundaries_y_end = generate_human_card_sections(
 			image=image,
 			text=single_human.email,
-			margin_top=10,
-			font_size=42,
+			margin_top=20,
+			font_size=52,
 			boundaries_y_start=next_boundaries_y_end,
 		)
 
@@ -73,30 +76,40 @@ def generate_human_card(single_human):
 		next_boundaries_y_end = generate_human_card_sections(
 			image=image,
 			text=single_human.city + ", " + single_human.country,
-			margin_top=10,
-			font_size=42,
+			margin_top=20,
+			font_size=52,
 			boundaries_y_start=next_boundaries_y_end,
 		)
 
 	if single_human.work or single_human.company:
 		next_boundaries_y_end = generate_human_card_sections(
 			image=image,
-			text=single_human.work + " @ " + single_human.company,
-			margin_top=10,
-			font_size=42,
+			text='\n'.join(tw_work.wrap(single_human.work + " at " + single_human.company)),
+			margin_top=20,
+			font_size=52,
 			boundaries_y_start=next_boundaries_y_end,
+			boundaries_y_end=next_boundaries_y_end + 114,
 		)
+
+	# if single_human.company:
+	# 	next_boundaries_y_end = generate_human_card_sections(
+	# 		image=image,
+	# 		text=" at " + single_human.company,
+	# 		margin_top=2,
+	# 		font_size=52,
+	# 		boundaries_y_start=next_boundaries_y_end,
+	# 	)
 
 	if single_human.contactme:
 		next_boundaries_y_end = generate_human_card_sections(
 			image=image,
 			text="contanct me when:",
-			margin_top=20,
+			margin_top=30,
 			font_size=42,
 			boundaries_y_start=next_boundaries_y_end,
 		)
 
-		contactme = '\n'.join(['\n'.join(tw.wrap(line))
+		contactme = '\n'.join(['\n'.join(tw_contactme.wrap(line))
 						  for line in single_human.contactme[1:len(single_human.contactme)-1]
 						 .splitlines() if line.strip() != ''])
 
@@ -104,9 +117,9 @@ def generate_human_card(single_human):
 			image=image,
 			text=contactme,
 			margin_top=5,
-			font_size=42,
+			font_size=52,
 			boundaries_y_start=next_boundaries_y_end,
-			boundaries_y_end=next_boundaries_y_end + 500,
+			boundaries_y_end=next_boundaries_y_end + 400,
 		)
 
 	img.save(card_filename)
