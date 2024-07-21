@@ -3,8 +3,11 @@ from PIL import Image, ImageDraw, ImageFont
 
 from lib.human_data_generator import generate_human_data
 from lib.text_writer import get_font_with_auto_adjusted_size
+from textwrap import TextWrapper
 
 font_path_default = "assets/fonts/gabiant-regular.ttf"
+tw = TextWrapper()
+tw.width = 40
 
 
 def generate_human_card_sections(image, text, margin_top, font_size, boundaries_y_start, boundaries_y_end=None, font_path=font_path_default):
@@ -96,7 +99,7 @@ def generate_human_card(single_human):
 
 		next_boundaries_y_end = generate_human_card_sections(
 			image=image,
-			text=single_human.contactme,
+			text="\n".join(tw.wrap(single_human.contactme[1:len(single_human.contactme)-1])),
 			margin_top=5,
 			font_size=42,
 			boundaries_y_start=next_boundaries_y_end,
