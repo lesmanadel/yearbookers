@@ -29,7 +29,12 @@ def generate_human_card_sections(image, text, margin_top, font_size, boundaries_
 def generate_human_card(single_human):
 	print("[RUNNING] generating human")
 	background = cv2.imread('assets/images/human_card_background.jpg')
-	profile_picture = cv2.imread(f'assets/images/profile_pictures/{single_human.imagename}')
+	try:
+		profile_picture = cv2.imread(f'assets/images/profile_pictures/{single_human.imagename}')
+		profile_picture = cv2.resize(profile_picture, (700, 700))
+	except:
+		profile_picture = cv2.imread(f'assets/images/profile_pictures/z default 2.jpg')
+		profile_picture = cv2.resize(profile_picture, (700, 700))
 
 	background = cv2.resize(background, (777, 1649))
 	profile_picture = cv2.resize(profile_picture, (700, 700))
@@ -53,46 +58,50 @@ def generate_human_card(single_human):
 		boundaries_y_start=next_boundaries_y_end,
 	)
 
-	next_boundaries_y_end = generate_human_card_sections(
-		image=image,
-		text=single_human.email,
-		margin_top=10,
-		font_size=42,
-		boundaries_y_start=next_boundaries_y_end,
-	)
+	if single_human.email:
+		next_boundaries_y_end = generate_human_card_sections(
+			image=image,
+			text=single_human.email,
+			margin_top=10,
+			font_size=42,
+			boundaries_y_start=next_boundaries_y_end,
+		)
 
-	next_boundaries_y_end = generate_human_card_sections(
-		image=image,
-		text=single_human.city + ", " + single_human.country,
-		margin_top=10,
-		font_size=42,
-		boundaries_y_start=next_boundaries_y_end,
-	)
+	if single_human.city or single_human.country:
+		next_boundaries_y_end = generate_human_card_sections(
+			image=image,
+			text=single_human.city + ", " + single_human.country,
+			margin_top=10,
+			font_size=42,
+			boundaries_y_start=next_boundaries_y_end,
+		)
 
-	next_boundaries_y_end = generate_human_card_sections(
-		image=image,
-		text=single_human.work + " @ " + single_human.company,
-		margin_top=10,
-		font_size=42,
-		boundaries_y_start=next_boundaries_y_end,
-	)
+	if single_human.work or single_human.company:
+		next_boundaries_y_end = generate_human_card_sections(
+			image=image,
+			text=single_human.work + " @ " + single_human.company,
+			margin_top=10,
+			font_size=42,
+			boundaries_y_start=next_boundaries_y_end,
+		)
 
-	next_boundaries_y_end = generate_human_card_sections(
-		image=image,
-		text="contanct me when:",
-		margin_top=20,
-		font_size=42,
-		boundaries_y_start=next_boundaries_y_end,
-	)
+	if single_human.contactme:
+		next_boundaries_y_end = generate_human_card_sections(
+			image=image,
+			text="contanct me when:",
+			margin_top=20,
+			font_size=42,
+			boundaries_y_start=next_boundaries_y_end,
+		)
 
-	next_boundaries_y_end = generate_human_card_sections(
-		image=image,
-		text=single_human.contactme,
-		margin_top=5,
-		font_size=42,
-		boundaries_y_start=next_boundaries_y_end,
-		boundaries_y_end=next_boundaries_y_end + 500,
-	)
+		next_boundaries_y_end = generate_human_card_sections(
+			image=image,
+			text=single_human.contactme,
+			margin_top=5,
+			font_size=42,
+			boundaries_y_start=next_boundaries_y_end,
+			boundaries_y_end=next_boundaries_y_end + 500,
+		)
 
 	img.save(card_filename)
 
@@ -131,7 +140,7 @@ def generate_page(humans, page_number):
 	cv2.imwrite(card_filename, background)
 
 
-human_lists = generate_human_data("assets/csv_data/sample.csv")
+human_lists = generate_human_data("assets/csv_data/cc14.csv")
 
 for human in human_lists:
 	print(human.name)
@@ -139,5 +148,5 @@ for human in human_lists:
 
 i = 0
 while i < len(human_lists):
-	generate_page(humans=human_lists[i:i+6], page_number=i/6 + 1)
+	generate_page(humans=human_lists[i:i+6], page_number=int(i/6 + 1))
 	i += 6
