@@ -30,14 +30,15 @@ def generate_human_card_sections(image, text, margin_top, font_size, boundaries_
 	return boundaries_y_end
 
 
-def generate_human_card(single_human):
+def generate_human_card(index, single_human):
 	print("[RUNNING] generating human")
-	background = cv2.imread('assets/images/human_card_background.jpg')
+	print(f'assets/images/card {int(index/6)%2} {index%6}.jpg')
+	background = cv2.imread(f'assets/images/card {int(index/6)%2} {index%6}.jpg')
 	try:
 		profile_picture = cv2.imread(f'assets/images/profile_pictures/{single_human.imagename}')
 		profile_picture = cv2.resize(profile_picture, (700, 700))
 	except:
-		profile_picture = cv2.imread(f'assets/images/profile_pictures/z default 2.jpg')
+		profile_picture = cv2.imread(f'assets/images/profile_pictures/z default 5.jpg')
 		profile_picture = cv2.resize(profile_picture, (700, 700))
 
 	background = cv2.resize(background, (777, 1649))
@@ -127,7 +128,7 @@ def generate_human_card(single_human):
 
 def generate_page(humans, page_number):
 	print(f"[RUNNING] generating page {page_number}")
-	background = cv2.imread('assets/images/background_test2.jpg')
+	background = cv2.imread(f'assets/images/background pattern {page_number%2}.jpg')
 
 	top_margin = 105
 	card_size_y = 1649
@@ -161,9 +162,9 @@ def generate_page(humans, page_number):
 
 human_lists = generate_human_data("assets/csv_data/cc14.csv")
 
-for human in human_lists:
+for index, human in enumerate(human_lists):
 	print(human.name)
-	generate_human_card(human)
+	generate_human_card(index, human)
 
 i = 0
 while i < len(human_lists):
